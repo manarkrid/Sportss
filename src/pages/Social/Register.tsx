@@ -87,11 +87,15 @@ const Register = () => {
       const dataFromCloud = await response.json();
       const image = dataFromCloud.secure_url;
 
-      await signup({ ...data, image });
-      toast.success("Registration successful", {
-        id: loadingToastId,
-      });
-      navigate("/login");
+      await signup({ name:data.name, email:data.email, password:data.password,phone:data.phone, address:data.address}).then((response)=>{console.log(response)
+        toast.success("Registration successful", {
+          id: loadingToastId,
+        });
+        navigate("/login");
+
+      }).catch((err)=>{console.log(err)})
+      ;
+      
     } catch (error) {
       toast.error("Something went wrong. Please try again later.", { duration: 2000 });
     }

@@ -32,16 +32,18 @@ const Login: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+
     try {
       const { email, password } = data;
-      const { data: loginData } = await login({ email, password });
+      const { data: loginData } = await login({ email:email, password:password});
+      console.log(loginData);
       const { token ,data:logindata} = loginData;
 
       const user = jwtDecode(token);
       console.log('Logged in user', user);
       toast.success('Logged in successfully', { duration: 2000 });
       dispatch(setToken(token));
-      dispatch(setRole(logindata.role));
+      
       
       dispatch(setUser(user));
       navigate('/');

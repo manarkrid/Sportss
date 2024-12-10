@@ -1,14 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useGetFacilityQuery } from "@/redux/api/facility/facilityApi";
 import Card from "../Components/Card";
 import Pagination from "../Components/Pagination";
 import { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 
+
 const Facilities = () => {
-  const { data ,isLoading} = useGetFacilityQuery(undefined);
-  const facilities = data?.data;
-  console.log(facilities);
+  
+  const featuredFacilities = [
+    {
+      id: 1,
+      name: 'SandSpiker Beach Volleyball',
+      description: 'A premium turf with top-notch grass quality for all your sports needs.',
+      rating: 4.5,
+      image: 'https://images.unsplash.com/photo-1632300951015-42d7df909581?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZvb3RiYWxsJTIwZmllbGR8ZW58MHx8MHx8fDA%3D', // Update with your image paths
+    },
+    {
+      id: 2,
+      name: 'Premier Cricket Ground',
+      description: 'Ideal for football and soccer games with excellent drainage and surface.',
+      rating: 4.7,
+      image: 'https://images.unsplash.com/photo-1585822754398-04873d4e1f50?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNyaWNrZXQlMjBmaWVsZHxlbnwwfHwwfHx8MA%3D%3D',
+    },
+    {
+      id: 3,
+      name: 'Ace Tennis Club',
+      description: 'Perfect for casual games and training sessions with a well-maintained field.',
+      rating: 4.3,
+      image: 'https://plus.unsplash.com/premium_photo-1708119178805-321dec8ba9cf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YmFkbWludG9uJTIwZmllbGR8ZW58MHwwfDB8fHww',
+    },
+  ];
 
   const [query, setQuery] = useState("");
   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
@@ -16,10 +37,10 @@ const Facilities = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
-
+  
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = facilities?.slice(
+  const currentProducts = featuredFacilities?.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
@@ -42,12 +63,8 @@ const Facilities = () => {
     return matchesQuery && matchesPrice && !facility.isDeleted;
   });
 
-  if(isLoading){
-    <div className="text-center text-lg text-white">
-      Loading...
-    </div>
-  }
-
+  
+  
   return (
     <div className="bg-black text-white bg-gradient-to-b from-black to-[#5D2CA8] h-full pt-12 pb-12">
       <h1 className="text-center font-bold text-3xl md:text-5xl lg:text-5xl tracking-tighter pb-10 lg:pb-24 pt-6 lg:pt-10">
@@ -89,7 +106,7 @@ const Facilities = () => {
       </div>
       <Pagination
         productsPerPage={productsPerPage}
-        totalProducts={facilities?.length}
+        totalProducts={featuredFacilities?.length}
         paginate={paginate}
         activePage={currentPage}
       />
