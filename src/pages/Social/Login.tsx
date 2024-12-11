@@ -43,7 +43,7 @@ const Login: React.FC = () => {
       console.log('Logged in user', user);
       toast.success('Logged in successfully', { duration: 2000 });
       dispatch(setToken(token));
-      
+      localStorage.setItem('token', token);
       
       dispatch(setUser(user));
       navigate('/');

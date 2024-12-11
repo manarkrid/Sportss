@@ -4,7 +4,7 @@
 import { Link } from "react-router-dom";
 
 const Card = ({ item }: any) => {
-  const {_id, name, image, description, pricePerHour,location } = item;
+  const { name, image, description, pricePerHour,location } = item;
   
   const truncateDescription = (text: string, maxLength: number) => {
     if (text.length > maxLength) {
@@ -33,13 +33,13 @@ const Card = ({ item }: any) => {
         <p className="text-gray-700 text-base">Location: {location}</p>
       </div>
       
-      <Link to={`/facilities/${_id}`}>
+      <Link to={`/facilities/booking-details`}>
       <div className="px-6 pb-4 mt-auto ">
         <button 
           type="button" 
           className="w-full text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Check Details
+          Booking Details
         </button>
       </div>
       </Link>

@@ -63,9 +63,9 @@ const router = createBrowserRouter([
         loader: ({params}) => fetch(`http://localhost:5000/api/facility/${params.id}`)
       },
       {
-        path: "/facilities/booking-details/:id",
-        element: <BookingDetails />,
-        loader: ({params}) => fetch(`http://localhost:5000/api/facility/${params.id}`)
+        path: "/facilities/booking-details",
+        element: <ProtectedRoute><BookingDetails /></ProtectedRoute>,
+       // loader: ({params}) => fetch(`http://localhost:5000/api/facility/${params.id}`)
 
         
       },

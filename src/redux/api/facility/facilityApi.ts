@@ -14,7 +14,7 @@ const authApi = baseApi.injectEndpoints({
        
         getFacility: builder.query({
             query:() =>({
-                url:"/facility/",
+                url:"/facility",
                 method:"GET",
                 
             })

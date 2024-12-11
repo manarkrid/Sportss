@@ -6,8 +6,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import default styles
 import { useLoaderData } from 'react-router-dom';
 import { toast } from 'sonner';
+import axios from 'axios';
 
-type Facility = {
+/*type Facility = {
   _id: string;
   description: string;
   image: string;
@@ -18,15 +19,15 @@ type Facility = {
   __v: number;
 };
 
-type LoaderData = {
+ type LoaderData = {
   data: Facility;
-};
+};*/
 
 
   
 const BookingDetails = () => {
-  const { data } = useLoaderData() as LoaderData;
-  console.log(data,"********************")
+ // const { data } = useLoaderData() as LoaderData;
+ // console.log(data,"********************")
   const {user} = useAppSelector((state:RootState) => state.user)
   console.log(user?.email)
   const [createBooking] = useCreateBookingMutation();
@@ -38,6 +39,7 @@ const BookingDetails = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [guestCount, setGuestCount] = useState<number>(0);
+  const [courtName, setCourtName]=useState<string>('');
 
   const handleCheckAvailability = async () => {
     if (startDate) {
@@ -65,23 +67,24 @@ const BookingDetails = () => {
         setCheckingAvailability(true);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/check-availability?date=${formattedDate}&facility=${data._id}`);
-            if (response.ok) {
-                const result = await response.json();
-                if (result.success && result.data.success) {
-                    setAvailableTimeSlots(result.data.data);
-                } else {
-                    console.error('Error:', result.message || 'No available slots found.');
-                    setAvailableTimeSlots([]); // Clear the slots if no data or error
-                }
-            } else {
-                console.error('Error fetching availability:', response.statusText);
-                setAvailableTimeSlots([]); // Clear the slots if response is not ok
+          //const response = await fetch(`http://localhost:5000/api/check-availability?date=${formattedDate}&facility=${data._id}`);
+          
+          if (formattedDate === '2024-12-12' || formattedDate === '2024-12-15' || formattedDate === '2024-12-18'  ) {
+                  setAvailableTimeSlots([{startTime:'11:00', endTime:'11:30'},{startTime:'12:00', endTime:'12:30'}]);
+             
+          } else {
+              console.error('no availabilities');
+              setAvailableTimeSlots([]); // Clear the slots if response is no
+
             }
-        } catch (error) {
-            console.error('Error fetching availability:', error);
-            setAvailableTimeSlots([]); // Clear the slots in case of error
-        }
+          } catch (error) {
+              console.error('Error fetching availability:', error);
+              setAvailableTimeSlots([]); // Clear the slots in case of error
+          }
+
+          
+
+
 
         setCheckingAvailability(false);
     } else {
@@ -126,28 +129,41 @@ const BookingDetails = () => {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
       };
+      const token = localStorage.getItem('token');
+      console.log(token);
+
+      // Configure headers
+      const config = {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+          },
+      };
 
       const formData = {
-        facility: data._id,
-        email:user?.email,
+        facilityName: courtName,
+        //email:user?.email,
         firstName,
         lastName,
         guestCount,
-        date: formatDate(startDateTime), // Use formatDate here
-        startTime: startDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
-        endTime: endDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
+        date: formatDate(startDateTime),
+        startTime: startDateTime,
+        endTime: endDateTime,
       };
+
 
       console.log('Form submitted with data:', formData);
 
       // Uncomment this when ready to integrate with API
-      const res = await createBooking(formData);
-      toast.loading("Creating Booking...", { id: 'booking-loading' });
-      console.log(res);
+      toast.loading("Creating Booking...", { id: "booking-loading" });
+      const response = await axios.post('http://localhost:5000/api/bookings', formData, config);
 
-      if(res.data.success){
-        window.location.href = res.data.data.payment_url
+      if (response){
+        alert('Booking created!')
       }
+      /*if(res.data.success){
+        window.location.href = res.data.data.payment_url
+      }*/
       
 
     } else {
@@ -215,10 +231,12 @@ const BookingDetails = () => {
                   name="fName"
                   id="fName"
                   placeholder="Court Name"
-                  value={data.name}
+                  // value={data.name}
+                  value={courtName}
+                  onChange={(e) => setCourtName(e.target.value)}
                   aria-disabled
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-black outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  disabled
+                  
                 />
               </div>
             </div>
@@ -300,7 +318,7 @@ const BookingDetails = () => {
             type="submit"
             className="w-full rounded-md border border-black bg-black py-3 px-6 text-base  text-white hover:black font-bold"
           >
-            Confirm Payment
+            Confirm 
           </button>
         </form>
       </div>
